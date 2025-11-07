@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HossieForge || Akande Hossanah Israel - Full Stack Developer</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700&family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* ------------------------------------------------
+           1. Base Styling & Variables (Dark Mode First)
+           ------------------------------------------------ */
+        :root {
+            /* Dark Mode Defaults - Inspired by the login design's reds and darks */
+            --bg-color: #0d0d0d; /* Very dark background */
+            --primary-accent: #e53935; /* Strong red from the design */
+            --secondary-bg: #1a1a1a; /* Slightly lighter dark for cards/sections */
+            --text-color: #e0e0e0;
+            --light-text-color: #b0b0b0;
+            --border-glow: rgba(229, 57, 53, 0.4); /* Red glow effect */
+            --button-hover: #c62828; /* Darker red on hover */
+            --font-primary: 'Poppins', sans-serif;
+            --font-secondary: 'Montserrat', sans-serif;
+        }
+
+        /* Light Mode Override (if you decide to implement it fully later, currently minimal) */
+        html[data-theme='light'] {
+            --bg-color: #ffffff;
+            --primary-accent: #1976d2; /* Blue for light mode accent */
+            --secondary-bg: #f0f0f0;
+            --text-color: #333333;
+            --light-text-color: #666666;
+            --border-glow: rgba(25, 118, 210, 0.2);
+            --button-hover: #1565c0;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: var(--font-primary);
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            transition: background-color 0.4s ease-in-out, color 0.4s ease-in-out;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* ------------------------------------------------
+           2. Layout & Header
+           ------------------------------------------------ */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 5%;
+            background-color: var(--bg-color);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3); /* Subtle dark shadow */
+        }
+
+        .logo {
+            font-family: var(--font-secondary);
+            font-size: 1.8em;
+            font-weight: 700;
+            color: var(--primary-accent);
+            letter-spacing: 1px;
+            text-shadow: 0 0 8px var(--border-glow); /* Subtle glow */
+        }
+
+        nav a {
+            color: var(--light-text-color);
+            text-decoration: none;
+            margin-left: 30px;
+            font-weight: 600;
+            padding: 5px 0;
+            position: relative;
+            transition: color 0.3s;
+        }
+
+        nav a::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            background: var(--primary-accent);
+            left: 0;
+            bottom: -5px;
+            transition: width 0.3s ease-out;
+        }
+
+        nav a:hover {
+            color: var(--primary-accent);
+        }
+
+        nav a:hover::after,
+        nav a.active::after { /* Active state for current page */
+            width: 100%;
+        }
+
+        main {
+            flex-grow: 1; /* Allows main content to expand and push footer down */
+            padding: 0 5%;
+            max-width: 1200px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        /* ------------------------------------------------
+           3. Hero Section - Adapting the Login Card's look
+           ------------------------------------------------ */
+        #hero {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            min-height: 80vh; /* Adjust as needed */
+            padding: 60px 0;
+            position: relative;
+            background: var(--secondary-bg);
+            border-radius: 15px;
+            margin: 40px 0;
+            overflow: hidden; /* To contain the diagonal */
+            box-shadow: 0 0 20px rgba(0,0,0,0.6), 0 0 40px var(--border-glow); /* Deeper glow effect */
+            animation: fadeInScale 1s ease-out forwards;
+        }
+
+        /* The diagonal accent from the login design */
+        #hero::before {
+            content: '';
+            position: absolute;
+            top: -20%; /* Adjust to control the start of the diagonal */
+            right: -20%; /* Adjust to control the end of the diagonal */
+            width: 70%;
+            height: 120%;
+            background: linear-gradient(135deg, var(--primary-accent) 0%, rgba(229, 57, 53, 0.7) 50%, transparent 100%);
+            transform: skewX(-20deg); /* Adjust for diagonal angle */
+            z-index: 1;
+            box-shadow: 0 0 30px rgba(229, 57, 53, 0.8);
+        }
+
+        .hero-content {
+            flex: 1;
+            padding: 40px 50px;
+            z-index: 2; /* Ensure content is above the diagonal */
+        }
+
+        .hero-content .greeting {
+            font-size: 1.1em;
+            color: var(--light-text-color);
+            margin-bottom: 5px;
+            animation: slideInLeft 1s ease-out 0.5s forwards;
+            opacity: 0;
+        }
+
+        .hero-content h1 {
+            font-family: var(--font-secondary);
+            font-size: 3.8em;
+            font-weight: 700;
+            color: var(--text-color);
+            margin: 10px 0 15px;
+            line-height: 1.1;
+            text-shadow: 0 0 5px rgba(0,0,0,0.5);
+            animation: slideInLeft 1s ease-out 0.7s forwards;
+            opacity: 0;
+        }
+        .hero-content h1 span {
+            color: var(--primary-accent);
+            text-shadow: 0 0 10px var(--border-glow);
+        }
+
+        .hero-content .tagline {
+            font-size: 1.4em;
+            color: var(--light-text-color);
+            margin-bottom: 30px;
+            animation: slideInLeft 1s ease-out 0.9s forwards;
+            opacity: 0;
+        }
+
+        .cta-button {
+            display: inline-block;
+            background-color: var(--primary-accent);
+            color: var(--bg-color); /* Text color contrasting accent */
+            padding: 14px 30px;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            letter-spacing: 0.8px;
+            transition: background-color 0.3s, transform 0.3s, box-shadow 0.3s;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+            animation: slideInLeft 1s ease-out 1.1s forwards;
+            opacity: 0;
+            margin-right: 20px;
+        }
+
+        .cta-button:hover {
+            background-color: var(--button-hover);
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.6), 0 0 25px var(--border-glow);
+        }
+
+        .secondary-button {
+            background: none;
+            border: 2px solid var(--primary-accent);
+            color: var(--primary-accent);
+            padding: 12px 28px;
+            border-radius: 8px;
+            font-weight: 600;
+            letter-spacing: 0.8px;
+            text-decoration: none;
+            transition: background-color 0.3s, color 0.3s, transform 0.3s, box-shadow 0.3s;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+            animation: slideInLeft 1s ease-out 1.3s forwards;
+            opacity: 0;
+        }
+
+        .secondary-button:hover {
+            background-color: var(--primary-accent);
+            color: var(--bg-color);
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5), 0 0 20px var(--border-glow);
+        }
+
+
+        .hero-image-container {
+            flex: 0.8;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 2; /* Ensure image is above diagonal */
+            padding-right: 50px;
+            position: relative;
+        }
+
+        .image-placeholder {
+            width: 280px;
+            height: 280px;
+            background-color: var(--primary-accent); /* Solid red circle */
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: var(--font-secondary);
+            font-size: 1.1em;
+            color: var(--bg-color);
+            text-align: center;
+            overflow: hidden; /* For actual image later */
+            box-shadow: 0 0 0 8px rgba(229, 57, 53, 0.4), /* Inner glow */
+                        0 0 20px rgba(229, 57, 53, 0.8); /* Outer glow */
+            animation: zoomIn 1s ease-out 1.5s forwards;
+            opacity: 0;
+            border: 2px solid var(--primary-accent); /* A subtle border */
+        }
+        .image-placeholder img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+            display: block; /* Remove extra space below image */
+        }
+
+        /* ------------------------------------------------
+           4. Common Sections
+           ------------------------------------------------ */
+        section {
+            padding: 80px 0;
+            margin-bottom: 40px;
+        }
+
+        h2 {
+            font-family: var(--font-secondary);
+            font-size: 2.8em;
+            margin-bottom: 50px;
+            text-align: center;
+            color: var(--primary-accent);
+            position: relative;
+            padding-bottom: 15px;
+            text-shadow: 0 0 10px rgba(0,0,0,0.4);
+            animation: slideInUp 1s ease-out forwards;
+            opacity: 0;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            width: 80px;
+            height: 4px;
+            background: var(--primary-accent);
+            left: 50%;
+            transform: translateX(-50%);
+            bottom: 0;
+            border-radius: 2px;
+            box-shadow: 0 0 10px var(--border-glow);
+        }
+
+        /* ------------------------------------------------
+           5. About & Projects Sections
+           ------------------------------------------------ */
+        #about p {
+            max-width: 800px;
+            margin: 0 auto 30px;
+            font-size: 1.1em;
+            text-align: center;
+            color: var(--light-text-color);
+            animation: slideInUp 1s ease-out 0.2s forwards;
+            opacity: 0;
+        }
+
+        #about h3 {
+            font-family: var(--font-secondary);
+            font-size: 1.8em;
+            margin-top: 40px;
+            margin-bottom: 25px;
+            color: var(--primary-accent);
+            text-align: center;
+            animation: slideInUp 1s ease-out 0.4s forwards;
+            opacity: 0;
+        }
+
+        .skills-list {
+            list-style: none;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px;
+            max-width: 800px;
+            margin: 0 auto;
+            animation: slideInUp 1s ease-out 0.6s forwards;
+            opacity: 0;
+        }
+
+        .skills-list li {
+            background-color: var(--secondary-bg);
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-size: 0.95em;
+            font-weight: 600;
+            color: var(--text-color);
+            border: 1px solid rgba(229, 57, 53, 0.2);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .skills-list li:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.5), 0 0 15px var(--border-glow);
+        }
+
+
+        .project-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 40px;
+        }
+
+        .project-card {
+            background-color: var(--secondary-bg);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5), 0 0 10px rgba(229, 57, 53, 0.2);
+            transition: box-shadow 0.3s, transform 0.3s;
+            border: 1px solid rgba(229, 57, 53, 0.3);
+            position: relative;
+            overflow: hidden;
+            animation: slideInUp 1s ease-out forwards;
+            opacity: 0;
+        }
+        .project-card:nth-child(even) { animation-delay: 0.1s; } /* Stagger animation */
+        .project-card:nth-child(odd) { animation-delay: 0.2s; }
+
+        .project-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: var(--primary-accent);
+            transform: translateX(-100%);
+            transition: transform 0.3s ease-out;
+        }
+        .project-card:hover::before {
+            transform: translateX(0);
+        }
+
+        .project-card h3 {
+            font-family: var(--font-secondary);
+            color: var(--primary-accent);
+            margin-bottom: 15px;
+            font-size: 1.8em;
+            text-shadow: 0 0 5px rgba(0,0,0,0.2);
+        }
+
+        .project-card p {
+            color: var(--light-text-color);
+            margin-bottom: 20px;
+        }
+
+        .project-card .project-links {
+            margin-top: 20px;
+            display: flex;
+            gap: 15px;
+        }
+
+        .project-card .project-links a {
+            display: inline-block;
+            color: var(--primary-accent);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.95em;
+            transition: color 0.3s, transform 0.3s;
+        }
+        .project-card .project-links a:hover {
+            color: var(--button-hover);
+            transform: translateX(5px);
+        }
+
+        /* ------------------------------------------------
+           6. Contact Section
+           ------------------------------------------------ */
+        #contact {
+            text-align: center;
+        }
+        #contact p {
+            font-size: 1.1em;
+            color: var(--light-text-color);
+            margin-bottom: 40px;
+            animation: slideInUp 1s ease-out 0.2s forwards;
+            opacity: 0;
+        }
+
+        /* ------------------------------------------------
+           7. Footer
+           ------------------------------------------------ */
+        footer {
+            text-align: center;
+            padding: 30px 0;
+            margin-top: 60px;
+            border-top: 1px solid var(--secondary-bg);
+            font-size: 0.85em;
+            color: var(--light-text-color);
+            opacity: 0.7;
+            animation: fadeIn 1s ease-out 2s forwards;
+            opacity: 0;
+        }
+
+        /* ------------------------------------------------
+           8. Animations
+           ------------------------------------------------ */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideInLeft {
+            from { opacity: 0; transform: translateX(-50px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        @keyframes slideInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes zoomIn {
+            from { opacity: 0; transform: scale(0.8); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        @keyframes fadeInScale {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        /* ------------------------------------------------
+           9. Responsive Design
+           ------------------------------------------------ */
+        @media (max-width: 900px) {
+            #hero {
+                flex-direction: column;
+                text-align: center;
+                padding: 40px 0;
+                margin: 20px 0;
+            }
+            #hero::before {
+                width: 100%;
+                height: 50%;
+                top: auto;
+                bottom: 0;
+                right: 0;
+                transform: skewX(0deg) skewY(-10deg); /* Adjust for mobile diagonal */
+                background: linear-gradient(0deg, var(--primary-accent) 0%, rgba(229, 57, 53, 0.7) 50%, transparent 100%);
+            }
+            .hero-content {
+                order: 2;
+                padding: 30px 20px;
+            }
+            .hero-content h1 {
+                font-size: 2.8em;
+            }
+            .hero-content .tagline {
+                font-size: 1.2em;
+            }
+            .hero-image-container {
+                order: 1;
+                padding-right: 0;
+                margin-bottom: 30px;
+            }
+            .image-placeholder {
+                width: 200px;
+                height: 200px;
+            }
+            h2 {
+                font-size: 2.2em;
+            }
+            nav a {
+                margin-left: 15px;
+            }
+        }
+
+        @media (max-width: 600px) {
+            header {
+                flex-direction: column;
+                padding: 15px 5%;
+            }
+            nav {
+                margin-top: 15px;
+            }
+            nav a {
+                margin: 0 10px;
+            }
+            .hero-content h1 {
+                font-size: 2.2em;
+            }
+            .hero-content .tagline {
+                font-size: 1em;
+            }
+            .cta-button, .secondary-button {
+                padding: 10px 20px;
+                font-size: 0.9em;
+                margin-right: 10px;
+            }
+            .skills-list li {
+                padding: 8px 15px;
+                font-size: 0.85em;
+            }
+            .project-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">HossieForge</div>
+        <nav>
+            <a href="#hero" class="active">Home</a>
+            <a href="#about">About</a>
+            <a href="#projects">Projects</a>
+            <a href="#contact">Contact</a>
+            </nav>
+    </header>
+
+    <main>
+        <section id="hero">
+            <div class="hero-content">
+                <p class="greeting">Hello, I'm</p>
+                <h1>Akande Hossanah <span>Israel</span></h1>
+                <p class="tagline">Full Stack Developer || Forging innovative web solutions.</p>
+                <a href="#projects" class="cta-button">View My Work</a>
+                <a href="#" class="secondary-button">Download CV</a>
+            </div>
+            <div class="hero-image-container">
+            <div class="profile-picture">
+    <img src="profile.jpg" alt="Akande Hossanah Israel - Full Stack Developer">
+</div>
+            </div>
+        </section>
+        
+        <section id="about">
+            <h2>About Me</h2>
+            <p>HossieForge Hub is my platform for innovation. I'm Akande Hossanah Israel, a zealous Full Stack Developer dedicated to forging elegant, high-performance digital experiences from concept to deployment. With a strong command over both front-end aesthetics (React, Vue, etc.) and back-end logic (Node.js, Python/Django, databases), I specialize in building scalable, secure, and user-centric applications.</p>
+            <p>I thrive on turning complex problems into clean, efficient, and user-friendly solutions that drive real value. Let's build something exceptional together!</p>
+
+            <h3>My Expertise</h3>
+            <ul class="skills-list">
+                <li>JavaScript (ES6+)</li>
+                <li>React.js</li>
+                <li>Node.js</li>
+                <li>Express.js</li>
+                <li>Python</li>
+                <li>Django / Flask</li>
+                <li>PostgreSQL</li>
+                <li>MongoDB</li>
+                <li>HTML5 & CSS3</li>
+                <li>RESTful APIs</li>
+                <li>Git & GitHub</li>
+                <li>Docker</li>
+                <li>AWS</li>
+            </ul>
+        </section>
+
+        <section id="projects">
+            <h2>Featured Projects</h2>
+            <div class="project-grid">
+                <article class="project-card">
+                    <h3>E-commerce Platform</h3>
+                    <p>A full-stack e-commerce application built with React, Node.js, Express, and MongoDB. Features user authentication, product catalog, shopping cart, and payment gateway integration.</p>
+                    <div class="project-links">
+                        <a href="#" target="_blank">Live Demo &rarr;</a>
+                        <a href="#" target="_blank">GitHub &rarr;</a>
+                    </div>
+                </article>
+
+                <article class="project-card">
+                    <h3>Real-time Chat App</h3>
+                    <p>Developed a real-time chat application using WebSockets (Socket.io) with a React frontend and Node.js backend. Supports private messaging and group chats.</p>
+                    <div class="project-links">
+                        <a href="#" target="_blank">Live Demo &rarr;</a>
+                        <a href="#" target="_blank">GitHub &rarr;</a>
+                    </div>
+                </article>
+
+                <article class="project-card">
+                    <h3>Data Visualization Dashboard</h3>
+                    <p>Created a dynamic dashboard for visualizing large datasets using Python (Flask), D3.js, and PostgreSQL. Features interactive charts and reports.</p>
+                    <div class="project-links">
+                        <a href="#" target="_blank">Live Demo &rarr;</a>
+                        <a href="#" target="_blank">GitHub &rarr;</a>
+                    </div>
+                </article>
+                
+                </div>
+        </section>
+        
+        <section id="contact">
+            <h2>Get In Touch</h2>
+            <p>I'm currently seeking new challenges and collaborations. Whether you have a project idea, a job opportunity, or just want to connect, feel free to reach out!</p>
+            <a href="mailto:your.email@example.com" class="cta-button">Say Hello</a>
+        </section>
+    </main>
+
+                 
+    <script>
+        // Set the current year in the footer
+        document.getElementById('current-year').textContent = new Date().getFullYear();
+                                
+        // Optional: Simple Intersection Observer for scroll animations
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0) translateX(0) scale(1)';
+                    entry.target.style.animationPlayState = 'running';
+                    observer.unobserve(entry.target); // Stop observing once animated
+                }
+            });
+        }, {
+            threshold: 0.1 // Trigger when 10% of the element is visible
+        });
+
+        // Observe all sections and animated elements
+        document.querySelectorAll('section, h2, #about p, #about h3, .skills-list, .project-card, footer, .hero-content > *, .image-placeholder').forEach(el => {
+            if (el.id !== 'hero' && !el.classList.contains('hero-content')) { // Hero section has its own initial animations
+                 observer.observe(el);
+            }
+        });
+    </script>
+</body>
+</html>
